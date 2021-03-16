@@ -1,11 +1,10 @@
 // ==UserScript==
-// @name     Endo-to-noskrien
+// @name     Import-to-noskrien
 // @version  1
 // @grant GM.xmlHttpRequest
 // @include http://www.noskrien.lv/wp-content/plugins/noskrien.lv/ajax_noskrietais.php
 // @require https://code.jquery.com/jquery-3.4.1.min.js
 // ==/UserScript==
-
 
 $("#labot_forma").append("<div id='response'/>");
 
@@ -44,6 +43,9 @@ $("#parse_garmin").click(function(){
 	GM.xmlHttpRequest({
   			method: "GET",
   			url: url,
+  			headers: {
+    			"NK": "NT"           
+  			},    
   			onload: function(response) {
 				var o = JSON.parse(response.responseText).summaryDTO;
 				fill_run({
@@ -57,26 +59,3 @@ $("#parse_garmin").click(function(){
 			}
 		});
 });
-
-
-
-$(".skrejiens_labot").prepend("Endo URL:<input size='100' type='text' id='endo_link'><input type='button' id='parse_endo' value='Load from endo'><br/>");
-$("#parse_endo").click(function(){
-	GM.xmlHttpRequest({
-  			method: "GET",
-  			url: $("#endo_link").val().replace("users", "rest/v1/users"),
-  			onload: function(response) {
-				var o = JSON.parse(response.responseText);
-				fill_run({
-					distance: o.distance,
-					average_hr: o.heart_rate_avg,
-					duration: o.duration,
-					notes: $("#endo_link").val(),
-					start_time: o.local_start_time
-				});          
-				save_run();          
-			}
-		});
-});
-
-
